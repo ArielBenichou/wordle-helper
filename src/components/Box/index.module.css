@@ -1,0 +1,9 @@
+.box {
+  border: 1px solid var(--color-tone-2);
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(80vw / 5 - 1.8rem);
+  font-weight: bold;
+}

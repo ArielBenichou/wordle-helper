@@ -1,0 +1,9 @@
+.boxesContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 80vw;
+  gap: 0.4rem;
+  height: calc(80vw / 5);
+}

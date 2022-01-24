@@ -1,0 +1,46 @@
+.keyboardContainer {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  height: 30vh;
+  width: 100vw;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-tone-4);
+  box-shadow: -1px -2px 20px 0px #000000a1;
+}
+
+.keyboardRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.5rem;
+  height: 25%;
+  width: 95%;
+}
+
+.keyboardLetter {
+  background-color: var(--color-tone-2);
+  min-width: 1.9rem;
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.keyboardLetter:hover {
+  background-color: var(--color-tone-3);
+}
+
+.keyboardLetter:active {
+  background-color: var(--color-tone-5);
+}
+
+.bigLetter {
+  min-width: 3rem;
+}
