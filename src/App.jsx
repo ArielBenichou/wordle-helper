@@ -180,6 +180,7 @@ function App() {
           <WordsList
             possibleWords={possibleWords.slice(0, pageSize)}
             showMore={showMoreWords}
+            isAllPossibleWordsShown={pageSize >= possibleWords.length}
           />
         ) : null}
         <p className={styles.copyright}>© Ariel Benichou</p>
