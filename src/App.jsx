@@ -163,6 +163,11 @@ function App() {
       <Header />
       <div className={styles.main}>
         <div className={styles.resetContainer}>
+          <div className={styles.hintContainer}>
+            <div className={styles.hint}>
+              <b>Hint!</b> tap on the square to change color
+            </div>
+          </div>
           <div className={styles.resetButton} onClick={resetGrid}>
             Reset
           </div>

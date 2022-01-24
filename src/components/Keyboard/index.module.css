@@ -30,13 +30,17 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: var(--color-tone-6);
+  font-weight: 600;
 }
 
 .keyboardLetter:hover {
+  color: var(--color-tone-1);
   background-color: var(--color-tone-3);
 }
 
 .keyboardLetter:active {
+  color: var(--color-tone-1);
   background-color: var(--color-tone-5);
 }
 
