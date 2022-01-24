@@ -2,13 +2,14 @@ import React from "react";
 import styles from "./index.module.css";
 
 import styled from "styled-components";
+import { LetterStatus } from "../../constants/letter-status";
 
 const StyledBox = styled.div`
   background-color: ${({ bgColor }) => {
     if (!bgColor) return "none";
-    else if (bgColor === "absent") return "var(--color-absent)";
-    else if (bgColor === "correct") return "var(--color-correct)";
-    else if (bgColor === "present") return "var(--color-present)";
+    else if (bgColor === LetterStatus.ABSENT) return "var(--color-absent)";
+    else if (bgColor === LetterStatus.CORRECT) return "var(--color-correct)";
+    else if (bgColor === LetterStatus.PRESENT) return "var(--color-present)";
   }};
 `;
 

@@ -6,4 +6,5 @@
   align-items: center;
   font-size: calc(80vw / 5 - 1.8rem);
   font-weight: bold;
+  text-transform: uppercase;
 }

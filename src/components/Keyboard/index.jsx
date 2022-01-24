@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./index.module.css";
 
-const firstRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
-const secondRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L"];
-const thirdRow = ["Z", "X", "C", "V", "B", "N", "M"];
+const firstRow = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
+const secondRow = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
+const thirdRow = ['z', 'x', 'c', 'v', 'b', 'n', 'm'];
 
 function Keyboard({ onWriteLetter, onEraseLetter, onEnterClick }) {
   return (

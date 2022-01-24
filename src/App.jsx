@@ -4,15 +4,19 @@ import BoxRow from "./components/BoxRow";
 import Header from "./components/Header";
 import Keyboard from "./components/Keyboard";
 import WordsList from "./components/WordsList";
+import { LetterStatus } from "./constants/letter-status";
 import wordsData from "./data/words.json";
 
 const DEFAULT_PAGE_SIZE = 10;
 
+const WORDS_NUMBER = 6;
+const LETTERS_NUMBER = 5;
+
 const initGuessedWords = () => {
-  return Array(1)
+  return Array(WORDS_NUMBER)
     .fill(null)
     .map((word, i) =>
-      Array(5)
+      Array(LETTERS_NUMBER)
         .fill(null)
         .map((letter, j) => ({ content: "", status: null, id: [i, j] }))
     );
@@ -41,9 +45,9 @@ function App() {
     }
 
     const getNextStatus = (status) => {
-      if (status === "present") return "correct";
-      if (status === "correct") return "absent";
-      if (status === "absent") return "present";
+      if (status === LetterStatus.PRESENT) return LetterStatus.CORRECT;
+      if (status === LetterStatus.CORRECT) return LetterStatus.ABSENT;
+      if (status === LetterStatus.ABSENT) return LetterStatus.PRESENT;
     };
     const newGuessedWords = [...guessedWords];
     const foundLetter = newGuessedWords[letter.id[0]][letter.id[1]];
@@ -52,7 +56,7 @@ function App() {
   };
 
   const writeLetter = (letterContent) => {
-    if (letterPointer[0] > 5) {
+    if (letterPointer[0] > WORDS_NUMBER -1) {
       console.log("max letters!");
       return;
     }
@@ -60,12 +64,12 @@ function App() {
     const newGuessedWords = [...guessedWords];
     const foundLetter = newGuessedWords[letterPointer[0]][letterPointer[1]];
     foundLetter.content = letterContent;
-    foundLetter.status = "absent";
+    foundLetter.status = LetterStatus.ABSENT;
     setGuessedWords(newGuessedWords);
 
     const newLetterPointer = letterPointer;
     newLetterPointer[1] += 1;
-    if (newLetterPointer[1] > 4) {
+    if (newLetterPointer[1] > LETTERS_NUMBER-1) {
       newLetterPointer[0] += 1;
       newLetterPointer[1] = 0;
     }
@@ -82,7 +86,7 @@ function App() {
     newLetterPointer[1] -= 1;
     if (newLetterPointer[1] < 0) {
       newLetterPointer[0] -= 1;
-      newLetterPointer[1] = 4;
+      newLetterPointer[1] = LETTERS_NUMBER-1;
     }
     console.log(newLetterPointer);
     setLetterPointer(newLetterPointer);
@@ -108,7 +112,7 @@ function App() {
 
     const allAbsentLetters = guessedWords
       .reduce((acc, word) => {
-        return [...acc, ...word.filter((letter) => letter.status === "absent")];
+        return [...acc, ...word.filter((letter) => letter.status === LetterStatus.ABSENT)];
       }, [])
       .map((letter) => letter.content);
 
@@ -116,11 +120,9 @@ function App() {
       .reduce((acc, word) => {
         return [
           ...acc,
-          ...word.filter((letter) => letter.status === "present"),
+          ...word.filter((letter) => letter.status === LetterStatus.PRESENT),
         ];
       }, [])
-      .map((letter) => letter.content);
-    console.log(allPresentLetters);
 
     const first5LettersWordIndex = 6963;
     const last5LettersWordIndex = 19613;
@@ -134,7 +136,11 @@ function App() {
       })
       .filter((w) => {
         return allPresentLetters.every((l) => {
-          const regex = new RegExp(`[${l}]`, "gi");
+          //the present letter can't be in its place
+          if (w[l.id[1]] === l.content) return false;
+
+          //but it must be in the word
+          const regex = new RegExp(`${l.content}`, "gi");
           const found = w.match(regex);
           return found;
         });
@@ -142,7 +148,7 @@ function App() {
       .filter((w) => {
         return guessedWords.every((word) => {
           const pattern = word
-            .map((l) => (l.status === "correct" ? l.content : "."))
+            .map((l) => (l.status === LetterStatus.CORRECT ? l.content : "."))
             .join("");
           const regex = new RegExp(`${pattern}`, "gi");
           const found = w.match(regex);
