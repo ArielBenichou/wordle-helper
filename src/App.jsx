@@ -4,8 +4,10 @@ import BoxRow from "./components/BoxRow";
 import Header from "./components/Header";
 import Keyboard from "./components/Keyboard";
 import WordsList from "./components/WordsList";
+import { ALPHABET } from "./constants/abc";
 import { LetterStatus } from "./constants/letter-status";
 import wordsData from "./data/words.json";
+import useKeyboard from "./hooks/useKeyboard";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -34,6 +36,18 @@ function App() {
   const [possibleWords, setPossibleWords] = useState(initPossibleWords());
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
+  const onKeyDown = (keyName, isCtrlOn) => {
+    if (keyName === "Backspace") {
+      eraseLetter();
+    } else if (keyName === "Enter") {
+      filterResult();
+    } else if (!isCtrlOn && ALPHABET.includes(keyName.toLowerCase())) {
+      writeLetter(keyName.toLowerCase());
+    }
+  };
+
+  useKeyboard(onKeyDown);
+
   useEffect(() => {
     loadStateToLocalStorage();
   }, []);
@@ -60,7 +74,7 @@ function App() {
     foundLetter.status = getNextStatus(foundLetter.status);
     setGuessedWords(newGuessedWords);
     saveStateToLocalStorage();
-  };  
+  };
 
   const writeLetter = (letterContent) => {
     if (letterPointer[0] > WORDS_NUMBER - 1) {
@@ -114,8 +128,12 @@ function App() {
   };
 
   const loadStateToLocalStorage = () => {
-    setGuessedWords(JSON.parse(localStorage.getItem("guessedWords")) || initGuessedWords());
-    setLetterPointer(JSON.parse(localStorage.getItem("letterPointer")) || initLetterPointer());
+    setGuessedWords(
+      JSON.parse(localStorage.getItem("guessedWords")) || initGuessedWords()
+    );
+    setLetterPointer(
+      JSON.parse(localStorage.getItem("letterPointer")) || initLetterPointer()
+    );
   };
 
   const clearStateToLocalStorage = () => {
