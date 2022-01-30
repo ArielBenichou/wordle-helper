@@ -52,7 +52,7 @@ function App() {
           ? [letterIndex[0], letterIndex[1] - 1]
           : [letterIndex[0] - 1, LETTERS_NUMBER - 1];
       };
-      
+
       const lastLetterPointer = getLastLetterIndex(letterPointer);
       if (!lastLetterPointer) return;
       changeLetterStatus(
@@ -105,6 +105,16 @@ function App() {
     const foundLetter = newGuessedWords[letterPointer[0]][letterPointer[1]];
     foundLetter.content = letterContent;
     foundLetter.status = LetterStatus.ABSENT;
+    // check if the letter in the same column but a row higher is the same as this one
+    // if yes set the status to the same one 
+    if (
+      letterPointer[0] > 0 &&
+      guessedWords[letterPointer[0] - 1][letterPointer[1]].content ===
+        foundLetter.content
+    ) {
+      foundLetter.status =
+        guessedWords[letterPointer[0] - 1][letterPointer[1]].status;
+    }
     setGuessedWords(newGuessedWords);
 
     const newLetterPointer = letterPointer;
