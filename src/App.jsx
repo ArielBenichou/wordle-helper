@@ -36,12 +36,31 @@ function App() {
   const [possibleWords, setPossibleWords] = useState(initPossibleWords());
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
-  const onKeyDown = (keyName, isCtrlOn) => {
+  const onKeyDown = (keyName, event) => {
     if (keyName === "Backspace") {
       eraseLetter();
+    } else if (keyName === " ") {
+      event.preventDefault();
+      const getLastLetterIndex = (letterIndex) => {
+        if (
+          (letterIndex[0] === 0 && letterIndex[1] === 0) ||
+          (letterIndex[0] === WORDS_NUMBER - 1 &&
+            letterIndex[1] === LETTERS_NUMBER - 1)
+        )
+          return null;
+        return letterIndex[1] <= LETTERS_NUMBER - 1 && letterIndex[1] > 0
+          ? [letterIndex[0], letterIndex[1] - 1]
+          : [letterIndex[0] - 1, LETTERS_NUMBER - 1];
+      };
+      
+      const lastLetterPointer = getLastLetterIndex(letterPointer);
+      if (!lastLetterPointer) return;
+      changeLetterStatus(
+        guessedWords[lastLetterPointer[0]][lastLetterPointer[1]]
+      );
     } else if (keyName === "Enter") {
       filterResult();
-    } else if (!isCtrlOn && ALPHABET.includes(keyName.toLowerCase())) {
+    } else if (!event.ctrlKey && ALPHABET.includes(keyName.toLowerCase())) {
       writeLetter(keyName.toLowerCase());
     }
   };

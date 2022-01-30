@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 function useKeyboard(callback) {
   useEffect(() => {
     const eventLis = window.addEventListener("keydown", (event) => {
-      callback(event.key, event.ctrlKey);
+      callback(event.key, event);
     });
 
     return () => {
