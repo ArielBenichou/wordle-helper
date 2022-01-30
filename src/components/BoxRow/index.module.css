@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: stretch;
-  width: 80vw;
+  width: 80%;
+  aspect-ratio: 5 / 1 ;
   gap: 0.4rem;
-  height: calc(80vw / 5);
 }

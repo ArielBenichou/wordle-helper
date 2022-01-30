@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: calc(80vw / 5 - 1.8rem);
+  font-size:calc(100vw/15);
   font-weight: bold;
   text-transform: uppercase;
 }
