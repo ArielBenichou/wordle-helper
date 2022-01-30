@@ -12,6 +12,8 @@ const DEFAULT_PAGE_SIZE = 10;
 const WORDS_NUMBER = 6;
 const LETTERS_NUMBER = 5;
 
+const initPossibleWords = () => [];
+
 const initGuessedWords = () => {
   return Array(WORDS_NUMBER)
     .fill(null)
@@ -29,8 +31,12 @@ function initLetterPointer() {
 function App() {
   const [guessedWords, setGuessedWords] = useState(initGuessedWords());
   const [letterPointer, setLetterPointer] = useState(initLetterPointer());
-  const [possibleWords, setPossibleWords] = useState([]);
+  const [possibleWords, setPossibleWords] = useState(initPossibleWords());
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+  useEffect(() => {
+    loadStateToLocalStorage();
+  }, []);
 
   useEffect(() => {
     if (guessedWords[0][0].content === "") {
@@ -53,10 +59,11 @@ function App() {
     const foundLetter = newGuessedWords[letter.id[0]][letter.id[1]];
     foundLetter.status = getNextStatus(foundLetter.status);
     setGuessedWords(newGuessedWords);
-  };
+    saveStateToLocalStorage();
+  };  
 
   const writeLetter = (letterContent) => {
-    if (letterPointer[0] > WORDS_NUMBER -1) {
+    if (letterPointer[0] > WORDS_NUMBER - 1) {
       console.log("max letters!");
       return;
     }
@@ -69,11 +76,12 @@ function App() {
 
     const newLetterPointer = letterPointer;
     newLetterPointer[1] += 1;
-    if (newLetterPointer[1] > LETTERS_NUMBER-1) {
+    if (newLetterPointer[1] > LETTERS_NUMBER - 1) {
       newLetterPointer[0] += 1;
       newLetterPointer[1] = 0;
     }
     setLetterPointer(newLetterPointer);
+    saveStateToLocalStorage();
   };
 
   const eraseLetter = () => {
@@ -86,7 +94,7 @@ function App() {
     newLetterPointer[1] -= 1;
     if (newLetterPointer[1] < 0) {
       newLetterPointer[0] -= 1;
-      newLetterPointer[1] = LETTERS_NUMBER-1;
+      newLetterPointer[1] = LETTERS_NUMBER - 1;
     }
     console.log(newLetterPointer);
     setLetterPointer(newLetterPointer);
@@ -97,12 +105,30 @@ function App() {
     foundLetter.content = "";
     foundLetter.status = null;
     setGuessedWords(newGuessedWords);
+    saveStateToLocalStorage();
+  };
+
+  const saveStateToLocalStorage = () => {
+    localStorage.setItem("guessedWords", JSON.stringify(guessedWords));
+    localStorage.setItem("letterPointer", JSON.stringify(letterPointer));
+  };
+
+  const loadStateToLocalStorage = () => {
+    setGuessedWords(JSON.parse(localStorage.getItem("guessedWords")) || initGuessedWords());
+    setLetterPointer(JSON.parse(localStorage.getItem("letterPointer")) || initLetterPointer());
+  };
+
+  const clearStateToLocalStorage = () => {
+    localStorage.setItem("guessedWords", JSON.stringify(initGuessedWords()));
+    localStorage.setItem("letterPointer", JSON.stringify(initLetterPointer()));
   };
 
   const resetGrid = () => {
     setGuessedWords(initGuessedWords());
     setLetterPointer(initLetterPointer());
+    setPossibleWords(initPossibleWords());
     setPageSize(DEFAULT_PAGE_SIZE);
+    clearStateToLocalStorage();
   };
 
   const filterResult = () => {
@@ -112,17 +138,19 @@ function App() {
 
     const allAbsentLetters = guessedWords
       .reduce((acc, word) => {
-        return [...acc, ...word.filter((letter) => letter.status === LetterStatus.ABSENT)];
+        return [
+          ...acc,
+          ...word.filter((letter) => letter.status === LetterStatus.ABSENT),
+        ];
       }, [])
       .map((letter) => letter.content);
 
-    const allPresentLetters = guessedWords
-      .reduce((acc, word) => {
-        return [
-          ...acc,
-          ...word.filter((letter) => letter.status === LetterStatus.PRESENT),
-        ];
-      }, [])
+    const allPresentLetters = guessedWords.reduce((acc, word) => {
+      return [
+        ...acc,
+        ...word.filter((letter) => letter.status === LetterStatus.PRESENT),
+      ];
+    }, []);
 
     const first5LettersWordIndex = 6963;
     const last5LettersWordIndex = 19613;
