@@ -5,13 +5,17 @@ import Header from "./components/Header";
 import Keyboard from "./components/Keyboard";
 import TopRow from "./components/TopRow";
 import WordsList from "./components/WordsList";
+import { ALPHABET } from "./constants/abc";
 import { LetterStatus } from "./constants/letter-status";
 import wordsData from "./data/words.json";
+import useKeyboard from "./hooks/useKeyboard";
 
 const DEFAULT_PAGE_SIZE = 10;
 
 const WORDS_NUMBER = 6;
 const LETTERS_NUMBER = 5;
+
+const initPossibleWords = () => [];
 
 const initGuessedWords = () => {
   return Array(WORDS_NUMBER)
@@ -30,8 +34,43 @@ function initLetterPointer() {
 function App() {
   const [guessedWords, setGuessedWords] = useState(initGuessedWords());
   const [letterPointer, setLetterPointer] = useState(initLetterPointer());
-  const [possibleWords, setPossibleWords] = useState([]);
+  const [possibleWords, setPossibleWords] = useState(initPossibleWords());
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+  const onKeyDown = (keyName, event) => {
+    if (keyName === "Backspace") {
+      eraseLetter();
+    } else if (keyName === " ") {
+      event.preventDefault();
+      const getLastLetterIndex = (letterIndex) => {
+        if (
+          (letterIndex[0] === 0 && letterIndex[1] === 0) ||
+          (letterIndex[0] === WORDS_NUMBER - 1 &&
+            letterIndex[1] === LETTERS_NUMBER - 1)
+        )
+          return null;
+        return letterIndex[1] <= LETTERS_NUMBER - 1 && letterIndex[1] > 0
+          ? [letterIndex[0], letterIndex[1] - 1]
+          : [letterIndex[0] - 1, LETTERS_NUMBER - 1];
+      };
+
+      const lastLetterPointer = getLastLetterIndex(letterPointer);
+      if (!lastLetterPointer) return;
+      changeLetterStatus(
+        guessedWords[lastLetterPointer[0]][lastLetterPointer[1]]
+      );
+    } else if (keyName === "Enter") {
+      filterResult();
+    } else if (!event.ctrlKey && ALPHABET.includes(keyName.toLowerCase())) {
+      writeLetter(keyName.toLowerCase());
+    }
+  };
+
+  useKeyboard(onKeyDown);
+
+  useEffect(() => {
+    loadStateToLocalStorage();
+  }, []);
 
   useEffect(() => {
     if (guessedWords[0][0].content === "") {
@@ -54,6 +93,7 @@ function App() {
     const foundLetter = newGuessedWords[letter.id[0]][letter.id[1]];
     foundLetter.status = getNextStatus(foundLetter.status);
     setGuessedWords(newGuessedWords);
+    saveStateToLocalStorage();
   };
 
   const writeLetter = (letterContent) => {
@@ -66,6 +106,16 @@ function App() {
     const foundLetter = newGuessedWords[letterPointer[0]][letterPointer[1]];
     foundLetter.content = letterContent;
     foundLetter.status = LetterStatus.ABSENT;
+    // check if the letter in the same column but a row higher is the same as this one
+    // if yes set the status to the same one 
+    if (
+      letterPointer[0] > 0 &&
+      guessedWords[letterPointer[0] - 1][letterPointer[1]].content ===
+        foundLetter.content
+    ) {
+      foundLetter.status =
+        guessedWords[letterPointer[0] - 1][letterPointer[1]].status;
+    }
     setGuessedWords(newGuessedWords);
 
     const newLetterPointer = letterPointer;
@@ -75,6 +125,7 @@ function App() {
       newLetterPointer[1] = 0;
     }
     setLetterPointer(newLetterPointer);
+    saveStateToLocalStorage();
   };
 
   const eraseLetter = () => {
@@ -98,12 +149,34 @@ function App() {
     foundLetter.content = "";
     foundLetter.status = null;
     setGuessedWords(newGuessedWords);
+    saveStateToLocalStorage();
+  };
+
+  const saveStateToLocalStorage = () => {
+    localStorage.setItem("guessedWords", JSON.stringify(guessedWords));
+    localStorage.setItem("letterPointer", JSON.stringify(letterPointer));
+  };
+
+  const loadStateToLocalStorage = () => {
+    setGuessedWords(
+      JSON.parse(localStorage.getItem("guessedWords")) || initGuessedWords()
+    );
+    setLetterPointer(
+      JSON.parse(localStorage.getItem("letterPointer")) || initLetterPointer()
+    );
+  };
+
+  const clearStateToLocalStorage = () => {
+    localStorage.setItem("guessedWords", JSON.stringify(initGuessedWords()));
+    localStorage.setItem("letterPointer", JSON.stringify(initLetterPointer()));
   };
 
   const resetGrid = () => {
     setGuessedWords(initGuessedWords());
     setLetterPointer(initLetterPointer());
+    setPossibleWords(initPossibleWords());
     setPageSize(DEFAULT_PAGE_SIZE);
+    clearStateToLocalStorage();
   };
 
   const filterResult = () => {

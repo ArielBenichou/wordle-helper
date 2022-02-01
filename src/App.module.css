@@ -35,9 +35,16 @@
   padding: 0 1rem 1rem;
 }
 
+.main::-webkit-scrollbar {
+  display: none;
+}
 
+@media (min-width: 600px) {
+  .main {
+    width: 60%;
 
-
+  }
+}
 
 .copyright {
   color: var(--color-tone-3);
