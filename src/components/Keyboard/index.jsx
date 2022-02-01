@@ -13,7 +13,7 @@ function Keyboard({ onWriteLetter, onEraseLetter, onEnterClick }) {
   return (
     <div className={styles.keyboardContainer}>
       {keyboardRows.map((row, i) => (
-        <KeysRow>
+        <KeysRow key={i}>
           {i === 2 ? (
             <KeyLetter
               letter={"Enter"}
@@ -22,7 +22,11 @@ function Keyboard({ onWriteLetter, onEraseLetter, onEnterClick }) {
             />
           ) : null}
           {row.map((letter) => (
-            <KeyLetter letter={letter} onLetterClick={onWriteLetter} />
+            <KeyLetter
+              key={letter}
+              letter={letter}
+              onLetterClick={onWriteLetter}
+            />
           ))}
           {i === 2 ? (
             <KeyLetter

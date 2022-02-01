@@ -1,0 +1,7 @@
+.resetButton {
+  font-weight: lighter;
+}
+
+.resetButton:hover {
+  color: white;
+}

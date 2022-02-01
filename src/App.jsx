@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import styles from "./App.module.css";
-import BoxRow from "./components/BoxRow";
+import Grid from "./components/Grid";
 import Header from "./components/Header";
 import Keyboard from "./components/Keyboard";
+import TopRow from "./components/TopRow";
 import WordsList from "./components/WordsList";
 import { LetterStatus } from "./constants/letter-status";
 import wordsData from "./data/words.json";
@@ -56,7 +57,7 @@ function App() {
   };
 
   const writeLetter = (letterContent) => {
-    if (letterPointer[0] > WORDS_NUMBER -1) {
+    if (letterPointer[0] > WORDS_NUMBER - 1) {
       console.log("max letters!");
       return;
     }
@@ -69,7 +70,7 @@ function App() {
 
     const newLetterPointer = letterPointer;
     newLetterPointer[1] += 1;
-    if (newLetterPointer[1] > LETTERS_NUMBER-1) {
+    if (newLetterPointer[1] > LETTERS_NUMBER - 1) {
       newLetterPointer[0] += 1;
       newLetterPointer[1] = 0;
     }
@@ -86,7 +87,7 @@ function App() {
     newLetterPointer[1] -= 1;
     if (newLetterPointer[1] < 0) {
       newLetterPointer[0] -= 1;
-      newLetterPointer[1] = LETTERS_NUMBER-1;
+      newLetterPointer[1] = LETTERS_NUMBER - 1;
     }
     console.log(newLetterPointer);
     setLetterPointer(newLetterPointer);
@@ -112,17 +113,19 @@ function App() {
 
     const allAbsentLetters = guessedWords
       .reduce((acc, word) => {
-        return [...acc, ...word.filter((letter) => letter.status === LetterStatus.ABSENT)];
+        return [
+          ...acc,
+          ...word.filter((letter) => letter.status === LetterStatus.ABSENT),
+        ];
       }, [])
       .map((letter) => letter.content);
 
-    const allPresentLetters = guessedWords
-      .reduce((acc, word) => {
-        return [
-          ...acc,
-          ...word.filter((letter) => letter.status === LetterStatus.PRESENT),
-        ];
-      }, [])
+    const allPresentLetters = guessedWords.reduce((acc, word) => {
+      return [
+        ...acc,
+        ...word.filter((letter) => letter.status === LetterStatus.PRESENT),
+      ];
+    }, []);
 
     const first5LettersWordIndex = 6963;
     const last5LettersWordIndex = 19613;
@@ -168,32 +171,13 @@ function App() {
     <div className={styles.App}>
       <Header />
       <div className={styles.main}>
-        <div className={styles.resetContainer}>
-          <div className={styles.hintContainer}>
-            <div className={styles.hint}>
-              <b>Hint!</b> tap on the square to change color
-            </div>
-          </div>
-          <div className={styles.resetButton} onClick={resetGrid}>
-            Reset
-          </div>
-        </div>
-        <div className={styles.boxesGrid}>
-          {guessedWords.map((word, idx) => (
-            <BoxRow
-              key={idx}
-              guessedWord={word}
-              onLetterClick={changeLetterStatus}
-            />
-          ))}
-        </div>
-        {possibleWords.length ? (
-          <WordsList
-            possibleWords={possibleWords.slice(0, pageSize)}
-            showMore={showMoreWords}
-            isAllPossibleWordsShown={pageSize >= possibleWords.length}
-          />
-        ) : null}
+        <TopRow resetGrid={resetGrid}/>
+        <Grid guessedWords={guessedWords } changeLetterStatus={changeLetterStatus } />
+        <WordsList
+          possibleWords={possibleWords.slice(0, pageSize)}
+          showMore={showMoreWords}
+          isAllPossibleWordsShown={pageSize >= possibleWords.length}
+        />
         <p className={styles.copyright}>© Ariel Benichou</p>
       </div>
       <Keyboard
