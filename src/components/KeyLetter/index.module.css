@@ -1,0 +1,27 @@
+
+.keyboardLetter {
+  background-color: var(--color-tone-2);
+  min-width: 1.7rem;
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--color-tone-6);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.keyboardLetter:hover {
+  color: var(--color-tone-1);
+  background-color: var(--color-tone-3);
+}
+
+.keyboardLetter:active {
+  color: var(--color-tone-1);
+  background-color: var(--color-tone-5);
+}
+
+.bigLetter {
+  min-width: 3rem;
+}

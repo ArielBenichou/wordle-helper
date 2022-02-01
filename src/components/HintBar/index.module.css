@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--color-tone-3);
+}
