@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import styles from "./App.module.css";
+import Footer from "./components/Footer";
 import Grid from "./components/Grid";
 import Header from "./components/Header";
 import Keyboard from "./components/Keyboard";
@@ -65,7 +66,7 @@ function App() {
           showMore={showMoreWords}
           isAllPossibleWordsShown={isAllPossibleWordsShown()}
         />
-        <p className={styles.copyright}>© Ariel Benichou</p>
+        <Footer />
       </div>
       <Keyboard
         onWriteLetter={writeLetter}
