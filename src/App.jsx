@@ -54,7 +54,7 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <Header />
+      <Header state={state} dispatch={dispatch} />
       <div className={styles.main}>
         <TopRow resetGrid={resetGrid} />
         <Grid

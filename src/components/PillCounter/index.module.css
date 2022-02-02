@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.block {
+  background-color: var(--color-tone-1);
+  color: var(--color-tone-6);
+  height: 100%;
+  width: 35px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.block:first-child {
+  border-radius: 10px 0 0 10px;
+  border-right: 1px solid var(--color-tone-3);
+  background-color: var(--color-tone-2);
+}
+
+.block:last-child {
+  border-radius: 0 10px 10px 0;
+  border-right: 1px solid var(--color-tone-3);
+  background-color: var(--color-tone-2);
+}

@@ -15,14 +15,12 @@
 
 .github {
   width: auto;
-  height: 100%;
+  height: 70%;
   filter: invert(25%);
-  transition: all 0.2s;
+  transition: filter 0.2s;
   cursor: pointer;
 }
 
 .github:hover {
-  width: auto;
-  height: 100%;
   filter: invert(40%);
 }

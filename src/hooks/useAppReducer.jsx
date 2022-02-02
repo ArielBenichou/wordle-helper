@@ -1,8 +1,10 @@
 import { useReducer } from "react";
 import { filterWords } from "../algorithms/filter-words";
 import { LetterStatus } from "../constants/letter-status";
+import { LANGUAGES } from "../constants/languages";
 import wordsData from "../data/words.json";
 import { deepClone } from "../utils/clone";
+import { THEMES } from "../constants/themes";
 
 // === INIT & DEFAULT ===
 const DEFAULT_PAGE_SIZE = 10;
@@ -29,6 +31,8 @@ const initState = () => ({
   pageSize: DEFAULT_PAGE_SIZE,
   wordsNumber: DEFAULT_WORDS_NUMBER,
   lettersNumber: DEFAULT_LETTERS_NUMBER,
+  language: LANGUAGES.ENGLISH,
+  theme: THEMES.DARK,
 });
 
 // === ACTION TYPE ===
@@ -44,6 +48,9 @@ export const APP_ACTIONS = {
   WRITE_LETTER: "WRITE_LETTER",
   ERASE_LETTER: "ERASE_LETTER",
   CHANGE_LETTER_STATUS: "CHANGE_LETTER_STATUS",
+  SET_LANGUAGE: "SET_LANGUAGE",
+  SET_THEME: "SET_THEME",
+  RESET_ALL: "RESET_ALL",
 };
 
 // === ACTIONS ===
@@ -133,8 +140,16 @@ const writeLetter = (state, letterContent) => {
 // === REDUCER ===
 function reducer(state, action) {
   switch (action.type) {
-    case APP_ACTIONS.RESET_STATE:
+    case APP_ACTIONS.RESET_ALL:
       return { ...initState() };
+    case APP_ACTIONS.RESET_STATE:
+      return {
+        ...state,
+        guessedWords: initGuessedWords(state.wordsNumber, state.lettersNumber),
+        letterPointer: initLetterPointer(),
+        possibleWords: initPossibleWords(),
+        pageSize: DEFAULT_PAGE_SIZE,
+      };
     case APP_ACTIONS.INCREASE_PAGE_SIZE:
       return { ...state, pageSize: state.pageSize + DEFAULT_PAGE_SIZE };
     case APP_ACTIONS.SET_POSSIBLE_WORDS:
@@ -144,9 +159,19 @@ function reducer(state, action) {
     case APP_ACTIONS.SET_GUESSED_WORDS:
       return { ...state, guessedWords: action.payload };
     case APP_ACTIONS.SET_WORDS_NUMBER:
-      return { ...state, wordsNumber: action.payload };
+      return {
+        ...state,
+        wordsNumber: action.payload,
+        guessedWords: initGuessedWords(action.payload, state.lettersNumber),
+        letterPointer: initLetterPointer(),
+      };
     case APP_ACTIONS.SET_LETTERS_NUMBER:
-      return { ...state, lettersNumber: action.payload };
+      return {
+        ...state,
+        lettersNumber: action.payload,
+        guessedWords: initGuessedWords(state.wordsNumber, action.payload),
+        letterPointer: initLetterPointer(),
+      };
     case APP_ACTIONS.CHANGE_LETTER_STATUS:
       return {
         ...state,
@@ -162,16 +187,32 @@ function reducer(state, action) {
       const eraseRes = eraseLetter(state);
       return {
         ...state,
-        ...(eraseRes.newLetterPointer ? { letterPointer: eraseRes.newLetterPointer } : {}),
-        ...(eraseRes.newGuessedWords ? { guessedWords: eraseRes.newGuessedWords } : {}),
+        ...(eraseRes.newLetterPointer
+          ? { letterPointer: eraseRes.newLetterPointer }
+          : {}),
+        ...(eraseRes.newGuessedWords
+          ? { guessedWords: eraseRes.newGuessedWords }
+          : {}),
       };
     case APP_ACTIONS.WRITE_LETTER:
       const writeRes = writeLetter(state, action.payload);
       return {
         ...state,
-        ...(writeRes.newLetterPointer ? { letterPointer: writeRes.newLetterPointer } : {}),
-        ...(writeRes.newGuessedWords ? { guessedWords: writeRes.newGuessedWords } : {}),
+        ...(writeRes.newLetterPointer
+          ? { letterPointer: writeRes.newLetterPointer }
+          : {}),
+        ...(writeRes.newGuessedWords
+          ? { guessedWords: writeRes.newGuessedWords }
+          : {}),
       };
+    case APP_ACTIONS.SET_LANGUAGE:
+      if (Object.values(LANGUAGES).includes(action.payload)) {
+        return { ...state, language: action.payload };
+      } else {
+        return state;
+      }
+    case APP_ACTIONS.SET_THEME:
+      return { ...state, theme: action.payload };
     default:
       throw new Error();
   }

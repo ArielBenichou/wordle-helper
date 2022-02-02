@@ -22,23 +22,55 @@ function useLocalStorage(state, dispatch) {
   }, [state]);
 
   const saveStateToLocalStorage = () => {
-    localStorage.setItem("guessedWords", JSON.stringify(state.guessedWords));
-    localStorage.setItem("letterPointer", JSON.stringify(state.letterPointer));
+    localStorage.setItem(
+      "game",
+      JSON.stringify({
+        guessedWords: state.guessedWords,
+        letterPointer: state.letterPointer,
+      })
+    );
+    localStorage.setItem(
+      "settings",
+      JSON.stringify({
+        language: state.language,
+        lettersNumber: state.lettersNumber,
+        wordsNumber: state.wordsNumber,
+        theme: state.theme,
+      })
+    );
   };
 
   const loadStateToLocalStorage = () => {
-    const guessedWords = JSON.parse(localStorage.getItem("guessedWords"));
-    const letterPointer = JSON.parse(localStorage.getItem("letterPointer"));
-    if (guessedWords) {
+    const { guessedWords, letterPointer } =
+      JSON.parse(localStorage.getItem("game")) || {};
+    if (guessedWords && letterPointer) {
       dispatch({
         type: APP_ACTIONS.SET_GUESSED_WORDS,
         payload: guessedWords,
       });
-    }
-    if (letterPointer) {
       dispatch({
         type: APP_ACTIONS.SET_LETTER_POINTER,
         payload: letterPointer,
+      });
+    }
+    const { language, lettersNumber, wordsNumber, theme } =
+      JSON.parse(localStorage.getItem("settings")) || {};
+    if (language && lettersNumber && wordsNumber) {
+      dispatch({
+        type: APP_ACTIONS.SET_LANGUAGE,
+        payload: language,
+      });
+      dispatch({
+        type: APP_ACTIONS.SET_LETTERS_NUMBER,
+        payload: lettersNumber,
+      });
+      dispatch({
+        type: APP_ACTIONS.SET_WORDS_NUMBER,
+        payload: wordsNumber,
+      });
+      dispatch({
+        type: APP_ACTIONS.SET_THEME,
+        payload: theme,
       });
     }
   };
