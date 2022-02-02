@@ -78,10 +78,9 @@ const filterResult = (state) => {
 
 const eraseLetter = (state) => {
   const { letterPointer, guessedWords, lettersNumber } = state;
-
   if (letterPointer[0] === 0 && letterPointer[1] === 0) {
     console.log("min letters!");
-    return;
+    return {};
   }
 
   const newLetterPointer = deepClone(letterPointer);
@@ -100,11 +99,10 @@ const eraseLetter = (state) => {
 };
 
 const writeLetter = (state, letterContent) => {
-  console.log("writeLetter");
   const { letterPointer, guessedWords, wordsNumber, lettersNumber } = state;
   if (letterPointer[0] > wordsNumber - 1) {
     console.log("max letters!");
-    return;
+    return {};
   }
 
   const newGuessedWords = deepClone(guessedWords);
@@ -164,15 +162,15 @@ function reducer(state, action) {
       const eraseRes = eraseLetter(state);
       return {
         ...state,
-        letterPointer: eraseRes.newLetterPointer,
-        guessedWords: eraseRes.newGuessedWords,
+        ...(eraseRes.newLetterPointer ? { letterPointer: eraseRes.newLetterPointer } : {}),
+        ...(eraseRes.newGuessedWords ? { guessedWords: eraseRes.newGuessedWords } : {}),
       };
     case APP_ACTIONS.WRITE_LETTER:
       const writeRes = writeLetter(state, action.payload);
       return {
         ...state,
-        letterPointer: writeRes.newLetterPointer,
-        guessedWords: writeRes.newGuessedWords,
+        ...(writeRes.newLetterPointer ? { letterPointer: writeRes.newLetterPointer } : {}),
+        ...(writeRes.newGuessedWords ? { guessedWords: writeRes.newGuessedWords } : {}),
       };
     default:
       throw new Error();
