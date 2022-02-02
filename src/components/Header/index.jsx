@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import SettingsIcon from "../../assets/settings.svg?component";
 import SettingsDrawer from "../SettingsDrawer";
 import { useState } from "react";
+import { LANGUAGES } from "../../constants/languages";
 
 function Header({ state, dispatch }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -14,9 +15,11 @@ function Header({ state, dispatch }) {
     setIsSettingsOpen(false);
   };
 
+  const titleText = state.language === LANGUAGES.ENGLISH ? "wordle helper" : "וורדעל הלפר";
+
   return (
     <div className={styles.header}>
-      <div className={styles.title}>wordle helper</div>
+      <div className={styles.title}>{titleText}</div>
       <SettingsIcon className={styles.settings} onClick={openSettings} />
       {isSettingsOpen ? (
         <SettingsDrawer

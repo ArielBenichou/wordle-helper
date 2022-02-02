@@ -1,11 +1,13 @@
-import { ALPHABET } from "../constants/abc";
+import { EN_ALPHABET, HE_ALPHABET } from "../constants/abc";
+import { LANGUAGES } from "../constants/languages";
 import { APP_ACTIONS } from "./useAppReducer";
 import useKeyboard from "./useKeyboard";
 
 function useCustomKeyboard(state, dispatch) {
   // ! letterPointer is not updating as it should so when pressing "SPACE" it doesn't work
   const { wordsNumber, lettersNumber, letterPointer, guessedWords } = state;
-
+  const ALPHABET =
+    state.language === LANGUAGES.ENGLISH ? EN_ALPHABET : HE_ALPHABET;
   const onKeyDown = (keyName, event) => {
     if (keyName === "Backspace") {
       dispatch({ type: APP_ACTIONS.ERASE_LETTER });
@@ -24,7 +26,7 @@ function useCustomKeyboard(state, dispatch) {
           : [letterIndex[0] - 1, lettersNumber - 1];
       };
       const lastLetterPointer = getLastLetterIndex(letterPointer);
-      if (!lastLetterPointer) return; 
+      if (!lastLetterPointer) return;
 
       dispatch({
         type: APP_ACTIONS.CHANGE_LETTER_STATUS,

@@ -1,4 +1,4 @@
-export const ALPHABET = [
+export const EN_ALPHABET = [
   "a",
   "b",
   "c",
@@ -25,4 +25,34 @@ export const ALPHABET = [
   "x",
   "y",
   "z",
+];
+
+export const HE_ALPHABET = [
+  "ק",
+  "ר",
+  "א",
+  "ט",
+  "ו",
+  "ן",
+  "ם",
+  "פ",
+  "ש",
+  "ד",
+  "ג",
+  "כ",
+  "ע",
+  "י",
+  "ח",
+  "ל",
+  "ך",
+  "ף",
+  "ז",
+  "ס",
+  "ב",
+  "ה",
+  "נ",
+  "מ",
+  "צ",
+  "ת",
+  "ץ",
 ];

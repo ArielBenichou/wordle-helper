@@ -7,3 +7,8 @@
   aspect-ratio: 5 / 1 ;
   gap: 0.4rem;
 }
+
+.reverse {
+  flex-direction: row-reverse;
+
+}

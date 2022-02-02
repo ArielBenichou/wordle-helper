@@ -35,11 +35,12 @@ function SettingsDrawer({ closeSettings, state, dispatch }) {
             <div className={styles.menuItem}>
               <div className={styles.text}>Language:</div>
               <Select
+                value={state.language}
                 values={Object.values(LANGUAGES)}
                 setValue={setLanguage}
               />
             </div>
-            <div className={styles.menuItem}>
+            {/* <div className={styles.menuItem}>
               <div className={styles.text}>Letters:</div>
               <PillCounter
                 value={state.lettersNumber}
@@ -47,7 +48,7 @@ function SettingsDrawer({ closeSettings, state, dispatch }) {
                 min={2}
                 max={10}
               />
-            </div>
+            </div> */}
             <div className={styles.menuItem}>
               <div className={styles.text}>Words:</div>
               <PillCounter

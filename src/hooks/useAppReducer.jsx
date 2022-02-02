@@ -1,8 +1,9 @@
 import { useReducer } from "react";
 import { filterWords } from "../algorithms/filter-words";
 import { LetterStatus } from "../constants/letter-status";
-import { LANGUAGES } from "../constants/languages";
-import wordsData from "../data/words.json";
+import { LANGUAGES, LANGUAGES_CODE } from "../constants/languages";
+import wordsDataEn from "../data/en_5_letters.json";
+import wordsDataHe from "../data/he_5_letters.json";
 import { deepClone } from "../utils/clone";
 import { THEMES } from "../constants/themes";
 
@@ -68,18 +69,12 @@ const changeLetterStatus = (guessedWords, letter) => {
 };
 
 const filterResult = (state) => {
-  const { guessedWords } = state;
+  const { guessedWords, language } = state;
+  const wordsData = language === LANGUAGES.ENGLISH ? wordsDataEn : wordsDataHe;
 
   console.time("filterResult");
-  //TODO: use the number of letters per words to load the correct pool of words
-  const first5LettersWordIndex = 6963;
-  const last5LettersWordIndex = 19613;
-  const possibleWords = filterWords(
-    wordsData.words.slice(first5LettersWordIndex, last5LettersWordIndex),
-    guessedWords
-  );
+  const possibleWords = filterWords(wordsData, guessedWords);
   console.timeEnd("filterResult");
-
   return possibleWords;
 };
 
@@ -207,7 +202,15 @@ function reducer(state, action) {
       };
     case APP_ACTIONS.SET_LANGUAGE:
       if (Object.values(LANGUAGES).includes(action.payload)) {
-        return { ...state, language: action.payload };
+        return {
+          ...state,
+          language: action.payload,
+          guessedWords: initGuessedWords(
+            state.wordsNumber,
+            state.lettersNumber
+          ),
+          letterPointer: initLetterPointer(),
+        };
       } else {
         return state;
       }

@@ -13,7 +13,9 @@ import useLocalStorage from "./hooks/useLocalStorage";
 function App() {
   const [state, dispatch] = useAppReducer();
   useLocalStorage(state, dispatch);
-  useCustomKeyboard(state, dispatch);
+
+  // ! there is a problem with the hebrew and the space fix before release
+  // useCustomKeyboard(state, dispatch);
 
   useEffect(() => {
     if (state.guessedWords[0][0].content === "") {
@@ -60,6 +62,7 @@ function App() {
         <Grid
           guessedWords={state.guessedWords}
           changeLetterStatus={changeLetterStatus}
+          language={state.language}
         />
         <WordsList
           possibleWords={state.possibleWords.slice(0, state.pageSize)}
@@ -72,6 +75,7 @@ function App() {
         onWriteLetter={writeLetter}
         onEraseLetter={eraseLetter}
         onEnterClick={filterResult}
+        language={state.language}
       />
     </div>
   );
